@@ -17,15 +17,20 @@
         path: /usr/share/nginx/html/
         state: absent
 
-    - name: download frontend code
+    - name: download frontend code and extracting frontend code # we combined front end and backend together
       ansible.builtin.get_url:
         url: https://expense-artifacts.s3.amazonaws.com/frontend.zip
-        dest: /tmp/frontend.zip
+        dest: /usr/share/nginx/html
 
-    #- name: extracting frontend code
-    #  ansible.builtin.unarchive:
-    #    src: foo.tgz
-    #    dest: /var/lib/foo
+    - name: restarting nginx
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: yes
+
+
+
+
     #- name: changing directory to usr/share/nginx/html
     #- name: restarting nginx
 
