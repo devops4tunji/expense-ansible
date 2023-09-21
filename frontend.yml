@@ -18,7 +18,7 @@
         state: absent
 
     - name: download frontend code and extracting frontend code # we combined front end and backend together
-      ansible.builtin.get_url:
+      ansible.builtin.unarchive:     #changed this to unarchieve
         url: https://expense-artifacts.s3.amazonaws.com/frontend.zip
         dest: /usr/share/nginx/html
         remote_src: yes
