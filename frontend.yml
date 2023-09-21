@@ -1,0 +1,72 @@
+- name: frontend setup
+  hosts: all
+  tasks:
+    - name: installing nginx
+      hosts: all
+      tasks:
+        - name: nginx install
+          ansible.builtin.dnf:
+            name: nginx         #we had httpd there before so we changed the name to nginx since this is what we are installing
+            state: present     # we had latest there before but teacher said to use present so we dont have updates we didnt request.
+    - name: placing expense config file in nginx and redirecting it /tmp/expense.log
+      ansible.builtin.copy:
+            src: expense.conf
+            dest: /etc/nginx/default.d/expense.conf
+    - name: removing the /usr/share/nginx/html directory
+      ansible.builtin.file:
+        path: /usr/share/nginx/html/
+        state: absent
+    - name: download frontend code
+      ansible.builtin.get_url:
+        url: https://expense-artifacts.s3.amazonaws.com/frontend.zip
+        dest: /tmp/frontend.zip
+
+    #- name: extracting frontend code
+    #  ansible.builtin.unarchive:
+    #    src: foo.tgz
+    #    dest: /var/lib/foo
+    #- name: changing directory to usr/share/nginx/html
+    #- name: restarting nginx
+
+
+    # download_and_extract() {
+    # echo download $component code
+    # curl -s -o /tmp/$component.zip https://expense-artifacts.s3.amazonaws.com/$component.zip &>>$log_file
+    # failure_and_success
+    # echo extracting frontend zip file
+    # unzip /tmp/$component.zip >>$log_file
+    # failure_and_success
+  # }
+
+#  source common.sh #this was declared because i put log_file=/tmp/expense.log in the common.sh file
+  #echo $? #using this to see if the command failed or not
+
+ # echo installing nginx
+  #dnf 666install nginx -y &>>$log_file
+  #echo $? #using this to see if the command failed or not
+ # failure_and_success
+
+ # echo placing expense config file in nginx and redirecting it /tmp/expense.log
+  #cp expense.conf /etc/nginx/default.d/expense.conf &>>$log_file
+  #echo $? #using this to see if the command failed or not
+  #failure_and_success
+
+  #echo removing the /usr/share/nginx/html directory
+ # rm -rf /usr/share/nginx/html/* &>>$log_file
+  #echo $? #using this to see if the command failed or not
+  #failure_and_success
+
+  #echo changing directory to usr/share/nginx/html
+  #cd /usr/share/nginx/html &>>$log_file
+  #failure_and_success
+
+  #download_and_extract
+  #echo $? #using this to see if the command failed or not
+  #failure_and_success
+
+
+  #echo restarting nginx
+  #systemctl restart nginx &>>$log_file
+  #systemctl enable nginx &>>$log_file
+  #echo $? #using this to see if the command failed or not
+  #failure_and_success
