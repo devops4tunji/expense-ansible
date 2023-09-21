@@ -12,15 +12,10 @@
             src: expense.conf
             dest: /etc/nginx/default.d/expense.conf
 
-    - name: removing the /usr/share/nginx/html directory
+    - name: removing old /usr/share/nginx/html directory
       ansible.builtin.file:
         path: /usr/share/nginx/html/
         state: absent
-
-    - name: creating the /usr/share/nginx/html directory
-      ansible.builtin.file:
-        path: /usr/share/nginx/html/
-        state: directory  # notice this information stated to be state:directory, which means the directory will be created
 
     - name: download frontend code and extracting frontend code # we combined front end and backend together
       ansible.builtin.unarchive:     #changed this to unarchieve
