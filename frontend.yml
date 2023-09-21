@@ -2,20 +2,20 @@
   hosts: all
   tasks:
     - name: installing nginx
-      hosts: all
-      tasks:
-        - name: nginx install
-          ansible.builtin.dnf:
+      ansible.builtin.dnf:
             name: nginx         #we had httpd there before so we changed the name to nginx since this is what we are installing
             state: present     # we had latest there before but teacher said to use present so we dont have updates we didnt request.
+
     - name: placing expense config file in nginx and redirecting it /tmp/expense.log
       ansible.builtin.copy:
             src: expense.conf
             dest: /etc/nginx/default.d/expense.conf
+
     - name: removing the /usr/share/nginx/html directory
       ansible.builtin.file:
         path: /usr/share/nginx/html/
         state: absent
+
     - name: download frontend code
       ansible.builtin.get_url:
         url: https://expense-artifacts.s3.amazonaws.com/frontend.zip
