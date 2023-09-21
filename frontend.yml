@@ -24,17 +24,15 @@
 
     - name: download frontend code and extracting frontend code # we combined front end and backend together
       ansible.builtin.unarchive:     #changed this to unarchieve
-        url: https://expense-artifacts.s3.amazonaws.com/frontend.zip
+        src: https://expense-artifacts.s3.amazonaws.com/frontend.zip
         dest: /usr/share/nginx/html
         remote_src: yes
 
-
-
-    #- name: restarting nginx
-    #    ansible.builtin.service:
-    #    name: nginx
-    #    state: restarted
-    #    enabled: yes
+    - name: restarting nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+        enabled: yes
 
 
 
