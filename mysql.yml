@@ -1,0 +1,53 @@
+#echo disabling mysql default installation package
+#dnf module disable mysql -y &>>$log_file
+#failure_and_success
+
+- name: mysql setup
+  hosts: all
+  task:
+    - name: copy mysql repo
+      ansible.builtin.copy:
+        src: mysql.repo
+        dest: /etc/yum.repos.d/mysql.repo
+
+    - name: disable mysql 8 version
+      ansible.builtin.shell: dnf install mysql-community-server -y
+
+    - name: install my sql server
+      ansible.builtin..dnf:
+       name: mysql-community-server
+       state: present
+
+    - name: start my sql server
+      ansible.builtin.systemd:
+        name: mysqld
+        state: restarted
+
+    - name: set mysql password
+      ansible.build.shell: mysql_secure_installation --set-root-pass mysql_root_password
+
+
+
+
+
+#echo downloading the mysql community server
+#dnf install mysql-community-server -y &>>$log_file
+#failure_and_success
+
+#echo copying mysql.repo into /yum.repos.d/mysql.repo
+#cp mysql.repo /etc/yum.repos.d/mysql.repo &>>$log_file
+#failure_and_success
+
+#echo enabling and starting mysqld
+#systemctl enable mysqld &>>$log_file
+#systemctl start mysqld &>>$log_file
+#failure_and_success
+
+#echo setting mysql secure instalation
+#mysql_root_password=$1
+#mysql_secure_installation --set-root-pass mysql_root_password &>>$log_file  #here the password was ExpenseApp@1
+#failure_and_success
+
+#echo loading schema
+#mysql_root_password=$1
+#mysql -uroot  -pExpenseApp@1

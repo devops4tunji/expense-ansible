@@ -1,65 +1,134 @@
 
 
+- name: backend setup
+  hosts: all
+  become: yes
+  tasks:
+    - name: installing nodejs
+      ansible.builtin.shell: curl -sL https://rpm.nodesource.com/setup_lts.x | bash  #by default this is a shell command because of the curl -sl
+
+    - name: installing nodejs
+      ansible.builtin.dnf:
+        name:  nodejs        #we had httpd there before so we changed the name to nginx since this is what we are installing
+
+    - name: copying backend service to system/backendservice
+      ansible.builtin.copy:
+        src: backend.service
+        dest: /etc/systemd/system/backend.service
+
+    - name: removing the app directory
+      ansible.builtin.file:
+        path: /app
+        state: absent
+
+    - name: adding a user
+      ansible.builtin.user:
+        name: expense
+
+    - name: create a directory
+      ansible.builtin.file:
+        path: /app
+        state: directory
+
+    - name: download and extract
+      ansible.builtin.unarchive: #changed this to unarchived
+        src: https://expense-artifacts.s3.amazonaws.com/backend.zip
+        dest: /app
+        remote_src: yes
+
+    - name: installing nodejs dependencies
+      ansible.builtin.shell: npm install #( we did this because it is a shell command. we can check if the is ansible module for it
+      args:
+        chdir: /app
+      #ansible also has shell modules. that is if you want to do things like you are in the command line on ssh, ansible can provide the modules to do it.
+      # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/shell_module.html
+
+    - name: install mysql
+      ansible.builtin.dnf:
+        name: mysql
+
+    - name: load mysql schema
+      ansible.builtin.shell: mysql -h mysql.devopsafrican.online -uroot -pExpenseApp@1 < /app/schema/backend.sql
+      #ansible actually has a module for loading a schema, we will check it later
+      #and we hard coded the password just because we were doing it for the first time
+
+    - name: restarting backend service
+      ansible.builtin.systemd:
+       name: backend
+       state: restarted
+      enabled: yes
+      daemon-reload: yes
 
 
+
+
+
+
+      #download_and_extract2(){
+      #echo downloading the artifact for backend.
+      #curl -s -o /tmp/$component2.zip https://expense-artifacts.s3.amazonaws.com/backend.zip &>>$log_file
+      #failure_and_success
+      #echo unziping /tmp/$component2.zip file
+      #unzip /tmp/$component2.zip &>>$log_file
+      #failure_and_success
+
+
+
+
+
+
+#type npm &>>$log_file
+#if [ $? -ne 0 ]; then
 #echo downloading rpm
-  #curl -sL https://rpm.nodesource.com/setup_lts.x | bash &>>$log_file ( previous before we used the if command
-  #echo installing nodejs ( previous before we used the if command
-  #dnf install nodejs -y &>>$log_file
+#curl -sL https://rpm.nodesource.com/setup_lts.x | bash
+#echo installing nodejs
+#dnf install nodejs -y &>>$log_file
+#fi
+#failure_and_success
+
+#echo copying backendservice to /system/backendservice
+#cp $component2.service /etc/systemd/system/$component2.service &>>$log_file
+#failure_and_success
 
 
-type npm &>>$log_file
-if [ $? -ne 0 ]; then
-echo downloading rpm
-curl -sL https://rpm.nodesource.com/setup_lts.x | bash
-echo installing nodejs
-dnf install nodejs -y &>>$log_file
-fi
-failure_and_success
-
-echo copying backendservice to /system/backendservice
-cp $component2.service /etc/systemd/system/$component2.service &>>$log_file
-failure_and_success
+#echo removing /app directory
+#rm -rf /app &>>$log_file
+#failure_and_success
 
 
-echo removing /app directory
-rm -rf /app &>>$log_file
-failure_and_success
+#echo adding user expense or not adding
+#id expense &>>/log_file
+#if [ $? -ne 0 ]; then
+#useradd expense &>>$log_file
+#fi
+#failure_and_success
 
+#echo making a directory /app
+#mkdir /app &>>$log_file
+#failure_and_success
 
-echo adding user expense or not adding
-id expense &>>/log_file
-if [ $? -ne 0 ]; then
-useradd expense &>>$log_file
-fi
-failure_and_success
+#echo changing changing directory
+#cd /app &>>$log_file
+#ailure_and_success
 
-echo making a directory /app
-mkdir /app &>>$log_file
-failure_and_success
+#download_and_extract2
+#failure_and_success
 
-echo changing changing directory
-cd /app &>>$log_file
-failure_and_success
+#echo installing node program manager
+#npm install &>>$log_file
+#failure_and_success
 
-download_and_extract2
-failure_and_success
+#echo systemctl reload
+#systemctl daemon-reload &>>$log_file
+#systemctl enable backend &>>$log_file
+#systemctl start backend &>>$log_file
+#failure_and_success
 
-echo installing node program manager
-npm install &>>$log_file
-failure_and_success
+#echo installing mysql
+#dnf install mysql -y &>>$log_file
+#failure_and_success
 
-echo systemctl reload
-systemctl daemon-reload &>>$log_file
-systemctl enable backend &>>$log_file
-systemctl start backend &>>$log_file
-failure_and_success
-
-echo installing mysql
-dnf install mysql -y &>>$log_file
-failure_and_success
-
-echo logging into mysql
-mysql_root_password=$1    #we switched the password here to $1
-mysql -h mysql.devopsafrican.online -uroot -p$mysql_root_password < /app/schema/backend.sql &>>$log_file
-failure_and_success
+#echo logging into mysql
+#mysql_root_password=$1    #we switched the password here to $1
+#mysql -h mysql.devopsafrican.online -uroot -p$mysql_root_password < /app/schema/backend.sql &>>$log_file
+#failure_and_success
