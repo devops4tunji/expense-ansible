@@ -14,7 +14,7 @@
       ansible.builtin.shell: dnf install mysql-community-server -y
 
     - name: install my sql server
-      ansible.builtin..dnf:
+      ansible.builtin.dnf:
         name: mysql-community-server
         state: present
 
