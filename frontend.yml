@@ -19,13 +19,13 @@
 
     - name: creating the new nginx directory
       ansible.builtin.file:
-        path: /usr/share/nginx/html
+        path: /usr/share/nginx/html/
         state: directory  # notice this information stated to be state:directory, which means the directory will be created
 
     - name: download frontend code and extracting frontend code  # we combined front end and backend together
       ansible.builtin.unarchive:     #changed this to unarchived
         src: https://expense-artifacts.s3.amazonaws.com/frontend.zip
-        dest: /usr/share/nginx/html
+        dest: /usr/share/nginx/html/
         remote_src: yes
 
     - name: restarting nginx
