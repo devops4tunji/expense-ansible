@@ -24,7 +24,7 @@
         state: restarted
 
     - name: set mysql password
-      ansible.build.shell: mysql_secure_installation --set-root-pass mysql_root_password
+      ansible.build.shell: mysql_secure_installation --set-root-pass ExpenseApp@1
 
 
 
