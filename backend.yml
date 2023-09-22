@@ -43,7 +43,7 @@
       #ansible also has shell modules. that is if you want to do things like you are in the command line on ssh, ansible can provide the modules to do it.
       # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/shell_module.html
 
-    - name: install mysql
+    - name: install mysql client
       ansible.builtin.dnf:
         name: mysql
 
@@ -52,12 +52,12 @@
       #ansible actually has a module for loading a schema, we will check it later
       #and we hard coded the password just because we were doing it for the first time
 
-    - name: restarting backend service
+    - name: start backend service
       ansible.builtin.systemd:
-       name: backend
-       state: restarted
-      enabled: yes
-      daemon-reload: yes
+        name: backend
+        state: restarted
+        enabled: yes
+        daemon-reload: yes
 
 
 

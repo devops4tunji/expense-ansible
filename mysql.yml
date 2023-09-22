@@ -3,7 +3,7 @@
 #failure_and_success
 
 - name: mysql setup
-  hosts: all
+  hosts: all  #always remember your host all the time.
   become: yes
   tasks:
     - name: copy mysql repo
@@ -12,7 +12,7 @@
         dest: /etc/yum.repos.d/mysql.repo
 
     - name: disable mysql 8 version
-      ansible.builtin.shell: dnf module disable mysql -y
+      ansible.builtin.shell: dnf module disable mysql -y #using shells to execute commands
 
     - name: install my sql server
       ansible.builtin.dnf:
@@ -20,7 +20,7 @@
         state: present
 
     - name: start my sql server
-      ansible.builtin.systemd:
+      ansible.builtin.systemd:  #(things you should notice here is that he used systemd
         name: mysqld
         state: restarted
 
